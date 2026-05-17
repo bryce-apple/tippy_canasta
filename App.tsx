@@ -1,20 +1,35 @@
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { GameScreen } from './src/screens/GameScreen';
+import { RoundSummary } from './src/screens/RoundSummary';
+import { WinScreen } from './src/screens/WinScreen';
+
+type Screen = 'game' | 'roundSummary' | 'win';
 
 export default function App() {
+  const [currentScreen, setCurrentScreen] = useState<Screen>('game');
+
+  const navigate = (screen: Screen) => setCurrentScreen(screen);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <StatusBar style="light" />
+      {currentScreen === 'game' && (
+        <GameScreen
+          onRoundEnd={() => navigate('roundSummary')}
+          onGameOver={() => navigate('win')}
+        />
+      )}
+      {currentScreen === 'roundSummary' && (
+        <RoundSummary
+          onContinue={() => navigate('game')}
+        />
+      )}
+      {currentScreen === 'win' && (
+        <WinScreen
+          onNewGame={() => navigate('game')}
+        />
+      )}
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
